@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="js/jquery-min.js"></script>
+    <title>消费分析</title>
+</head>
+<style>
+    body{
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: rgb(51,51,51);
+    }
+    #month, #week,#month_regis,#week_regis,#re-1,#re-4,#re-7,#re-14{
+        background: rgb(51,81,81);
+        border: 0;
+    }
+    #month:hover,#week:hover,#month_regis:hover,#week_regis:hover,#re-1:hover,#re-4:hover,#re-7:hover,#re-14:hover{
+        background: rgb(101,101,101);
+    }
+</style>
+<body>
+<div class="active">
+    <!---------------------周活 月活 日活--------------------------->
+    <iframe id="active" src="html/wk_report.html" style="position: absolute;float: left;width: 510px;height:260px;" frameborder="0" scrolling="no">日活 月活 周活</iframe>
+    <div style="width: 510px;height: 40px">
+        <button id="month" onclick="active_month()" onmouseover="active_month()" style="position:relative;top: 260px;float: left;width: 255px;height: 40px;">月活跃度</button>
+        <button id="week" onclick="active_week()" onmouseover="active_week()" style="position: relative;top: 260px;float: left;width: 255px;height: 40px;">周活跃度</button>
+    </div>
+    <!---------------------流失用户------------------------------->
+    <iframe id="iframe-3" src="html/loss-user.html" style="position: absolute;top: 300px;left: 0;width: 510px;height: 360px" frameborder="0">流失用户</iframe>
+    <!---------------------日增 月增 周增-------------------------->
+    <iframe id="register" src="html/increase_day.html" style="position: absolute;bottom:0;float: left;width: 510px;height:260px;" frameborder="0" scrolling="no">日增 月增 周增</iframe>
+    <!--
+    <div style="width: 510px;height: 40px">
+        <button id="month_regis" onclick="active_month()" style="position:absolute;bottom: 260px;float: left;width: 170px;height: 40px;">月活跃度</button>
+        <button id="week_regis" onclick="active_week()" style="position: absolute;bottom: 260px;left:200px;float: left;width: 170px;height: 40px;">周活跃度</button>
+    </div>
+    -->
+    <!---------------------男女消费比率----------------------------->
+    <iframe id="iframe-0" src="html/consumption-ratio.html" style="position: absolute;right: 0px;top:0px;width: 300px;height: 200px;" frameborder="0" scrolling="no"></iframe>
+    <!---------------------各省消费能力------------------------------>
+    <iframe id="iframe-1" src="html/china.html" style="position: absolute;top: 0px;left: 650px;width: 800px;height: 800px" frameborder="0">浏览器不支持iframe?</iframe>
+    <!---------------------漏斗分析---------------------------------->
+    <iframe id="iframe-2" src="html/funnel.html" style="position: absolute;top:200px;right: 0;width: 300px;height: 400px;" frameborder="0"></iframe>
+    <!--------------------留存率----------------------------------->
+    <iframe id="iframe-4" src="html/retention_1.html" style="position:absolute;bottom: 0px;left: 650px;width: 800px;height: 300px" frameborder="0">留存率</iframe>
+    <div style="width: 600px;height: 40px;position: absolute;bottom: 0px;left: 650px">
+        <button id="re-1" onclick="retention(this.id)" onmouseover="retention(this.id)" style="position:absolute;bottom: 300px;float: left;width: 200px;height: 40px;">1日留存率</button>
+        <button id="re-4" onclick="retention(this.id)" onmouseover="retention(this.id)" style="position: absolute;bottom: 300px;float: left;width: 200px;height: 40px;left: 200px">4日留存率</button>
+        <button id="re-7" onclick="retention(this.id)" onmouseover="retention(this.id)" style="position: absolute;bottom: 300px;float: left;width: 200px;height: 40px;left: 400px">1周留存率</button>
+        <button id="re-14" onclick="retention(this.id)" onmouseover="retention(this.id)" style="position: absolute;bottom: 300px;float: left;width: 200px;height: 40px;left: 600px">2周留存率</button>
+    </div>
+    <!---------------------TOP10-------------------------------------->
+    <iframe id="iframe-5" src="html/top10.html" style="position: absolute;bottom: 0px;right: 0px;width: 400px;height: 400px;" frameborder="0"></iframe>
+</div>
+</body>
+<script>
+    function retention(id) {
+        var iframe_ = document.getElementById("iframe-4");
+        switch (id) {
+            case "re-1":iframe_.src="html/retention_1.html";break;
+            case "re-4":iframe_.src="html/retention_4.html";break;
+            case "re-7":iframe_.src="html/retention_7.html";break;
+            case "re-14":iframe_.src="html/retention_14.html";break;
+            default:break;
+        }
+    }
+    function active_month () {
+        var iframe_=document.getElementById("active");
+        iframe_.src="html/month-report.html";
+    }
+    function active_week () {
+        var iframe_=document.getElementById("active");
+        iframe_.src="html/wk_report.html";
+    }
+</script>
+</html>

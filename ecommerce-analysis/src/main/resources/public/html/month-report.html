@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/echarts.min.js"></script>
+    <script src="../js/dark.js"></script>
+</head>
+<style>
+    body{
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+</style>
+<body>
+<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+
+<div id="month" style="width: 510px;height:260px;float: left"></div>
+
+<script>
+    //AJAX 加载月活跃数
+    var xmlHttp = new XMLHttpRequest();
+
+    xmlHttp.onreadystatechange = function (ev) {
+        if(xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            var rep = JSON.parse(xmlHttp.responseText);
+
+            var months = [];
+            var totals = [];
+            for(var i = 0; i < rep.length; i++) {
+                months.push(rep[i].month + '月');
+                totals.push(rep[i].total);
+            }
+
+            var chart = echarts.init(document.getElementById("month"),'dark');
+            var option = {
+
+                title: {
+                    text: '月度用户活跃数'
+                },
+                tooltip: {
+                    trigger: 'axis',//坐标轴触发，主要在柱状图，折线图等会使用类目轴的图表中使用。
+
+                },
+                legend: {
+                    data: ["活跃数"]
+                },
+                xAxis: {
+                    data: months
+                },
+                toolbox: {
+                    feature: {
+                        magicType: {
+                            type: ['line', 'bar']
+                        },
+                        dataView: {},
+                    }
+                },
+                yAxis: {left:20},
+                series: [{
+                    left:200,
+                    name: '活跃数',
+                    type: 'line',
+                    data: totals,
+                    animationDelay: function (idx) {
+                        return idx * 10;
+                    }
+                }],
+                animationEasing: 'elasticOut',
+                animationDelayUpdate: function (idx) {
+                    return idx * 5;
+                }
+            }
+            chart.setOption(option)
+        }
+    }
+    xmlHttp.open('GET', '/uv/month', true)
+    xmlHttp.send();
+
+
+
+</script>
+</body>
+</html>

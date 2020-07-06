@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="../js/echarts.min.js"></script>
+    <script src="../js/dark.js"></script>
+    <title>Title</title>
+</head>
+<style>
+    body{
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+
+    }
+</style>
+<body>
+<div id="week" style="width: 510px;height:260px;float: left"></div>
+</body>
+<script>
+    //AJAX 加载周活跃数
+    var xmlHttp_wk = new XMLHttpRequest();
+
+    xmlHttp_wk.onreadystatechange = function (ev) {
+        if(xmlHttp_wk.readyState == 4 && xmlHttp_wk.status == 200) {
+            var rep = JSON.parse(xmlHttp_wk.responseText);
+
+            var weeks = [];
+            var totals_wk = [];
+            for(var i = 0; i < rep.length; i++) {
+                weeks.push(rep[i].wk_num + '周');
+                totals_wk.push(rep[i].total);
+            }
+
+            var chart = echarts.init(document.getElementById("week"),'dark');
+            var option = {
+                title: {
+                    text: '周用户活跃数'
+                },
+                tooltip: {
+                    trigger: 'axis',//坐标轴触发，主要在柱状图，折线图等会使用类目轴的图表中使用。
+                    axisPointer:'cross'
+                },
+                legend: {
+                    data: ["活跃数"]
+                },
+                xAxis: {
+                    data: weeks
+                },
+                toolbox: {
+                    feature: {
+                        magicType: {
+                            type: ['line', 'bar']
+                        },
+                        dataView: {},
+                    }
+                },
+                yAxis: {},
+                series: [{
+                    name: '活跃数',
+                    type: 'line',
+                    data: totals_wk,
+                    animationDelay: function (idx) {
+                        return idx * 10;
+                    }
+                }],
+                animationEasing: 'elasticOut',
+                animationDelayUpdate: function (idx) {
+                    return idx * 5;
+                }
+            }
+            chart.setOption(option)
+        }
+    }
+    xmlHttp_wk.open('GET', '/uv/week', true);
+    xmlHttp_wk.send();
+</script>
+</html>

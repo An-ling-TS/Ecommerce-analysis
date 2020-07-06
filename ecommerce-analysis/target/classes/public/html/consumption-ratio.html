@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="../js/echarts.min.js"></script>
+    <script src="../js/dark.js"></script>
+    <title>Title</title>
+</head>
+<body>
+<div id="main" style="width: 300px;height:200px;top:0px;float: right"></div>
+</body>
+<script>
+    var chart = echarts.init(document.getElementById("main"),'dark');
+    var option = {
+        title: {
+            text: '男女消费占比'
+        },
+        tooltip: {
+            trigger: 'item',//坐标轴触发，主要在柱状图，折线图等会使用类目轴的图表中使用。
+            formatter:'{a}</br>{b}</br>{d}%'
+        },
+        series: [{
+            type: 'pie',
+            radius:'55%',
+            center:['50%','60%'],
+            data: [{value:1096182,name:'男'},
+                    {value: 1097815,name:'女'}],
+            emphasis: {
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }]
+    }
+    chart.setOption(option)
+</script>
+</html>

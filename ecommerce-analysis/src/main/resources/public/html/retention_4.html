@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/echarts.min.js"></script>
+    <script src="../js/dark.js"></script>
+</head>
+<style>
+    body{
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+</style>
+<body>
+<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+<div id="main" style="width: 800px;height:300px;float: left"></div>
+<script>
+    //AJAX 加载月活跃数
+    var xmlHttp = new XMLHttpRequest();
+
+    xmlHttp.onreadystatechange = function (ev) {
+        if(xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            var rep = JSON.parse(xmlHttp.responseText);
+
+            var days = [];
+            var datas = [];
+            for(var i = 0; i < rep.length; i++) {
+                days.push(rep[i].dt);
+                datas.push(rep[i].value);
+            }
+
+            var chart = echarts.init(document.getElementById("main"),'dark');
+            var option = {
+                title: {
+                    text: '用户4日流失率'
+                },
+                tooltip: {
+                    trigger: 'axis',//坐标轴触发，主要在柱状图，折线图等会使用类目轴的图表中使用。
+
+                },
+                legend: {
+                    data: ["流失率"]
+                },
+                xAxis: {
+                    data: days
+                },
+                yAxis: {},
+                toolbox: {
+                    feature: {
+                        magicType: {
+                            type: ['line', 'bar']
+                        },
+                        dataView: {},
+                    }
+                },
+                series: [{
+                    name: '流失率',
+                    type: 'line',
+                    data: datas,
+                    animationDelay: function (idx) {
+                        return idx * 10;
+                    }
+                }],
+                animationEasing: 'elasticOut',
+                animationDelayUpdate: function (idx) {
+                    return idx * 5;
+                }
+            }
+            chart.setOption(option)
+        }
+    }
+    xmlHttp.open('GET', '/uv/retention-4', true)
+    xmlHttp.send();
+
+
+
+</script>
+</body>
+</html>

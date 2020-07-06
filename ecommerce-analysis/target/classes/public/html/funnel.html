@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/echarts.min.js"></script>
+    <script src="../js/dark.js"></script>
+</head>
+<body>
+<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+
+<div id="main" style="width: 300px;height:400px;position: absolute;top: 0px;right: 0"></div>
+
+<script>
+    //AJAX 加载月活跃数
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function (ev) {
+        if(xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            var rep = JSON.parse(xmlHttp.responseText);
+            var chart = echarts.init(document.getElementById("main"),'dark');
+            var datas = [];
+            for(var i = 0; i < rep.length; i++) {
+                    var data= {
+                        name:"",
+                        value:0
+                    }
+                    data.name=rep[i].name;
+                    data.value=rep[i].num;
+                    datas.push(data);
+            }
+            var option = {
+                title: {
+                    text: '用户购物指数'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter:'{a}</br>{b}</br>{d}%'
+                },
+                legend: {
+                    data: ["活跃数"]
+                },
+                series: [{
+                    name: '购物指数',
+                    type: 'funnel',
+                    left: '10%',
+                    top: 60,
+                    bottom: 60,
+                    width: '80%',
+                    min: 0,
+                    max: datas[1].value*2,
+                    minSize: '0%',
+                    maxSize: '100%',
+                    sort: 'descending',
+                    gap: 2,
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    labelLine: {
+                        length: 10,
+                        lineStyle: {
+                            width: 1,
+                            type: 'solid'
+                        }
+                    },
+                    itemStyle: {
+                        borderColor: '#fff',
+                        borderWidth: 1
+                    },
+                    emphasis: {
+                        label: {
+                            fontSize: 20
+                        }
+                    },
+                    data: datas
+                }]
+            }
+            chart.setOption(option)
+        }
+    }
+    xmlHttp.open('GET', '/uv/funnel', true)
+    xmlHttp.send();
+</script>
+</body>
+</html>

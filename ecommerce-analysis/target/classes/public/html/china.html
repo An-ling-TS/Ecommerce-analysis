@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="../js/echarts.min.js"></script>
+    <script type="text/javascript" src="../js/china.js"></script>
+    <script src="../js/dark.js"></script>
+</head>
+<body style="height: 100%; margin: 0">
+<div id="container" style="height: 800px;width: 800px;position: absolute;top: 0;left:0px;"></div>
+<script type="text/javascript">
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function (ev){
+        if(xmlHttp.readyState == 4 && xmlHttp.status == 200){
+            var dom = document.getElementById("container");
+            var myChart = echarts.init(dom,'dark');
+            var app = {};
+            var rep = JSON.parse(xmlHttp.responseText);
+            var datas=[];
+            for(var i = 0; i < rep.length; i++) {
+                var data = {
+                    name:'',
+                    value:0,
+                    item_num:0,
+                    ratio:0.0
+                };
+                data.name=rep[i].province.replace('市','');
+                data.value=rep[i].user_num;
+                data.item_num=rep[i].item_num;
+                data.ratio=(rep[i].item_num/rep[i].user_num).toFixed(2);
+                datas.push(data);
+            }
+            //手动添加南海诸岛^_^
+            datas.push(data={name:'南海诸岛',value:340000,item_num:1000000,ratio:(100/34).toFixed(2)});
+            //alert(JSON.stringify(datas));
+            option = null;
+            option = {
+                title: {
+                    text: '各省份消费能力',
+                    left: 'center',
+                    top:20
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter : function(params) {
+                        return params.name + '<br/>' + '用户数 : '
+                            + params.value + '<br/>' + '购买商品数 : '
+                            + params['data'].item_num + '<br/>' + '消费能力 : '
+                            +params['data'].ratio;
+                    }//数据格式化
+                },
+                visualMap: {
+                    min: 340000,
+                    max: 342000,
+                    left: 'left',
+                    top: 'bottom',
+                    text: ['高', '低'],           // 文本，默认为数值文本
+                    calculable: true,
+                    inRange: {color: ['green','yellow','red']},
+                    left:200,
+                    top:400
+                },
+                series: [
+                    {
+                        top:20,
+                        name: '各省消费力',
+                        type: 'map',
+                        mapType: 'china',
+                        roam: false,
+                        label: {
+                            normal: {
+                                show: false
+                            },
+                            emphasis: {
+                                show: true
+                            }
+                        },
+                        data: datas
+
+                    }
+                ]
+            };
+            myChart.setOption(option, true);
+        }
+    }
+    xmlHttp.open('GET','/uv/province',true);
+    xmlHttp.send();
+
+
+</script>
+</body>
+</html>
